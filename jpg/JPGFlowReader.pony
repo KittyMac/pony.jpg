@@ -11,11 +11,18 @@ primitive JPGReader
 		let pngData = FileExt.fileToByteBlock(filePath)?
 		let null = Pointer[None]
 		
+		var width:I32 = 0
+		var height:I32 = 0
+		let imgBytes = @decompressJPG[Pointer[U8]](pngData.cpointer(0), pngData.size(), addressof width, addressof height)
 		
-		@fprintf[I64](@pony_os_stdout[Pointer[U8]](), "test = %d\n".cstring(), @test[I32]())
+		if width == 0 then
+			@freeJPG[None](imgBytes)
+			error
+		end
 		
-		
-		recover Bitmap(10,10) end
+		let bitmap = recover Bitmap.copy(width.usize(),height.usize(),imgBytes) end
+		@freeJPG[None](imgBytes)
+		bitmap
 	
 
 actor JPGFlowReader
