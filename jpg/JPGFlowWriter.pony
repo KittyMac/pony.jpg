@@ -1,78 +1,33 @@
-/*
 use "fileExt"
 use "flow"
 
 use "path:/usr/lib" if osx
-use "lib:png"
+use "lib:ponyjpeg-osx" if osx
+use "lib:ponyjpeg-ios" if ios
 
-struct PNGWriteFnStruct
-	var fd:I32
-	
-	new create(fd':I32) =>
-		fd = fd'
+use @decompressJPG[Pointer[U8]](jpgData:Pointer[U8] tag, jpgLength:USize, out_width:Pointer[USize], out_height:Pointer[USize])
+use @compressJPG[Pointer[U8]](imgData:Pointer[U8] tag, width:USize, height:USize, quality:USize, out_jpgLength:Pointer[USize])
+use @freeJPG[None](imgData:Pointer[U8] tag)
 
-
-primitive PNGWriter
+primitive JPGWriter
 	fun tag write(filePath:String, bitmap:Bitmap)? =>
-
-		let null = Pointer[None]
 	
-		let malloc_fn = @{(png_ptr:Pointer[_PngStruct], size:USize):Pointer[U8] =>
-			if size == 0 then
-				Pointer[None]
-			end
-			@pony_malloc(size)
-		}
-		let free_fn = @{(png_ptr:Pointer[_PngStruct], ptr:Pointer[None]) => 
-			@pony_free(ptr)
-		}
-		let write_fn = @{(png_ptr:Pointer[_PngStruct] tag, data:Pointer[U8], length:USize) => 
-			let writeStructPtr = @png_get_io_ptr[NullablePointer[PNGWriteFnStruct]](png_ptr)
-			try
-				var writeStruct = writeStructPtr()?
-				FileExt.write(writeStruct.fd, data, length)
-			end
-		}
-	
-		let pngPtr = @png_create_write_struct_2(LIBPNG.png_libpng_ver_string().cpointer(), null, null, null, null, malloc_fn, free_fn)
-		if pngPtr.is_null() then
-			error
-		end
-	
-		let infoPtr = @png_create_info_struct(pngPtr)
-		if infoPtr.is_null() then
-			error
-		end
-	
+		var jpgLength:USize = 0
+		let jpgData = @compressJPG(bitmap.cpointer(), bitmap.width, bitmap.height, 85, addressof jpgLength)
+		
 		let fd = FileExt.open(filePath)
-	
-		let readerInfo = PNGWriteFnStruct(fd)
-		@png_set_write_fn(pngPtr, NullablePointer[PNGWriteFnStruct](readerInfo), write_fn, null)
-	
-		// Output is 8bit depth, RGBA format.
-		@png_set_IHDR[None](
-			pngPtr,
-			infoPtr,
-			bitmap.width, bitmap.height,
-			USize(8),
-			LIBPNG.png_color_type_rgba(),
-			LIBPNG.png_interlace_none(),
-			LIBPNG.png_compression_type_default(),
-			LIBPNG.png_filter_type_default()
-		)
-		@png_write_info[None](pngPtr, infoPtr)
-	
-		let rowPointers = bitmap.rowPointers()
-		@png_write_image[None](pngPtr, rowPointers)
-		bitmap.rowPointersFree(rowPointers)
-	
-		@png_write_end[None](pngPtr, null)
-	
+		if fd < 0 then
+			@freeJPG(jpgData)
+			error
+		end
+		
+		FileExt.write(fd, jpgData, jpgLength)
 		FileExt.close(fd)
+		
+		@freeJPG(jpgData)
 
-		@png_destroy_write_struct[None](pngPtr, infoPtr)
 
-actor PNGFlowWriter is Flowable
+actor JPGFlowWriter is Flowable
 
 	let target:Flowable tag
 	let filePath:String
@@ -88,10 +43,8 @@ actor PNGFlowWriter is Flowable
 		try
 			let bitmap = (consume dataIso) as Bitmap
 			try
-				PNGWriter.write(filePath, bitmap)?
+				JPGWriter.write(filePath, bitmap)?
 			end
 		end
 
 	
-	
-*/

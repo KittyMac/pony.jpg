@@ -25,8 +25,7 @@ actor Sprite is Flowable
 		try
 			let bitmap = (consume dataIso) as Bitmap
 			try
-				FileExt.bitmapToFile(bitmap, "/tmp/jpg.raw")?
-				//JPGWriter.write("/tmp/test_jpg.jpg", bitmap)?
+				JPGWriter.write("/tmp/test_jpg.jpg", bitmap)?
 			end
 		end
 	

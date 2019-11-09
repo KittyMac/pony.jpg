@@ -11,17 +11,17 @@ primitive JPGReader
 		let pngData = FileExt.fileToByteBlock(filePath)?
 		let null = Pointer[None]
 		
-		var width:I32 = 0
-		var height:I32 = 0
-		let imgBytes = @decompressJPG[Pointer[U8]](pngData.cpointer(0), pngData.size(), addressof width, addressof height)
+		var width:USize = 0
+		var height:USize = 0
+		let imgBytes = @decompressJPG(pngData.cpointer(0), pngData.size(), addressof width, addressof height)
 		
 		if width == 0 then
-			@freeJPG[None](imgBytes)
+			@freeJPG(imgBytes)
 			error
 		end
 		
 		let bitmap = recover Bitmap.copy(width.usize(),height.usize(),imgBytes) end
-		@freeJPG[None](imgBytes)
+		@freeJPG(imgBytes)
 		bitmap
 	
 
