@@ -3,8 +3,6 @@ use "ponytest"
 use "files"
 use "flow"
 
-use @sleep[I32](seconds: I32)
-
 actor Main is TestList
 	new create(env: Env) => PonyTest(env, this)
 	new make() => None
@@ -15,7 +13,7 @@ actor Main is TestList
 
 
 
-actor Sprite is Flowable
+actor _Sprite is Flowable
 	// test actor to read a JPG and save it back to a file
 	
 	be flowFinished() =>
@@ -37,7 +35,7 @@ class iso _TestReadJPG is UnitTest
 	fun name(): String => "read jpg"
 
 	fun apply(h: TestHelper) =>
-		Sprite.read("sample.jpg")
+		_Sprite.read("sample.jpg")
 	
 
 

@@ -10,7 +10,7 @@ use @compressJPG[Pointer[U8]](imgData:Pointer[U8] tag, width:USize, height:USize
 use @freeJPG[None](imgData:Pointer[U8] tag)
 
 primitive JPGWriter
-	fun tag write(filePath:String, bitmap:Bitmap)? =>
+	fun tag write(filePath:String, bitmap:Bitmap box)? =>
 	
 		var jpgLength:USize = 0
 		let jpgData = @compressJPG(bitmap.cpointer(), bitmap.width, bitmap.height, 85, addressof jpgLength)
