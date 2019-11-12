@@ -29,6 +29,8 @@ actor JPGFlowReader
 
 	let target:Flowable tag
 	let filePath:String
+	
+	fun _tag():USize => 114
 
 	new create(filePath':String, target':Flowable tag) =>
 		target = target'
