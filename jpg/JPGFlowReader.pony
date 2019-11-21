@@ -8,7 +8,7 @@ use "lib:ponyjpeg-ios" if ios
 
 primitive JPGReader
 	fun tag read(filePath:String):Bitmap iso^ ? =>
-		let pngData = FileExt.fileToByteBlock(filePath)?
+		let pngData = FileExt.fileToArray(filePath)?
 		let null = Pointer[None]
 		
 		var width:USize = 0
