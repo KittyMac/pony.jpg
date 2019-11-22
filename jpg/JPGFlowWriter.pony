@@ -2,9 +2,11 @@ use "fileExt"
 use "flow"
 use "bitmap"
 
-use "path:/usr/lib" if osx
 use "lib:ponyjpeg-osx" if osx
 use "lib:ponyjpeg-ios" if ios
+
+use "lib:jpeg-osx" if osx
+use "lib:jpeg-ios" if ios
 
 use @decompressJPG[Pointer[U8]](jpgData:Pointer[U8] tag, jpgLength:USize, out_width:Pointer[USize], out_height:Pointer[USize])
 use @compressJPG[Pointer[U8]](imgData:Pointer[U8] tag, width:USize, height:USize, quality:USize, out_jpgLength:Pointer[USize])

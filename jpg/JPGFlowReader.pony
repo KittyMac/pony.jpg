@@ -2,10 +2,11 @@ use "fileExt"
 use "flow"
 use "bitmap"
 
-use "path:/usr/lib" if osx
 use "lib:ponyjpeg-osx" if osx
 use "lib:ponyjpeg-ios" if ios
 
+use "lib:jpeg-osx" if osx
+use "lib:jpeg-ios" if ios
 
 primitive JPGReader
 	fun tag read(filePath:String):Bitmap iso^ ? =>
