@@ -13,7 +13,7 @@ iphonesdklib="$(iphonesdk_isysroot)/usr/lib"
 all: shim pony run
 	
 check-folders:
-	-mkdir ./build
+	@mkdir -p ./build
 
 shim-native:
 	cd build
@@ -39,4 +39,8 @@ clean:
 	rm ./build/*
 
 run:
+	./build/jpg
+
+test: check-folders copy-libs
+	stable env /Volumes/Development/Development/pony/ponyc/build/release/ponyc -V=0 -p $(lib_dir) -o ./build/ ./jpg
 	./build/jpg

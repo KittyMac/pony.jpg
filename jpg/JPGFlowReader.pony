@@ -10,12 +10,11 @@ use "lib:jpeg-ios" if ios
 
 primitive JPGReader
 	fun tag read(filePath:String):Bitmap iso^ ? =>
-		let pngData = FileExt.fileToArray(filePath)?
-		let null = Pointer[None]
+		let jpgData = FileExt.fileToArray(filePath)?
 		
 		var width:USize = 0
 		var height:USize = 0
-		let imgBytes = @decompressJPG(pngData.cpointer(0), pngData.size(), addressof width, addressof height)
+		let imgBytes = @decompressJPG(jpgData.cpointer(0), jpgData.size(), addressof width, addressof height)
 		
 		if width == 0 then
 			@freeJPG(imgBytes)
