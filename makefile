@@ -1,6 +1,8 @@
 build_dir=./build
 lib_dir=./lib
 
+bitmap_lib_dir=../pony.bitmap/lib
+
 native_cc=clang++
 native_ar=ar
 
@@ -33,7 +35,7 @@ pony: check-folders copy-libs
 copy-libs:
 	@cp ./shim/libjpeg/iphone-build/lib/libjpeg.a ./lib/libjpeg-ios.a
 	@cp ./shim/libjpeg/macosx-build/lib/libjpeg.a ./lib/libjpeg-osx.a
-	@cp ../pony.bitmap/lib/*.a ./lib/
+	@cp ${bitmap_lib_dir}/*.a ./lib/
 
 clean:
 	rm ./build/*
@@ -71,6 +73,7 @@ corral-git:
 	@corral add github.com/KittyMac/pony.bitmap.git -q
 	@corral add github.com/KittyMac/pony.png.git -q
 
+ci: bitmap_lib_dir = ./_corral/github_com_KittyMac_pony_bitmap/lib/
 ci: corral-git corral-fetch all
 	
 dev: corral-local corral-fetch all
